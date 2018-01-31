@@ -24,4 +24,8 @@ export class MessageComponent {
             error => console.log(error)
         );
     }
+
+    messageBelongToUser(userId: string) {
+        return this.messageService.messageBelongToUser(userId);
+    }
 }

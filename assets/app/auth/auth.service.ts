@@ -26,4 +26,26 @@ export class AuthService {
         })
         .catch((error: Response)=> Observable.throw(error.json()));
     }
+
+    signIn(user: User) {
+
+        let data = JSON.stringify(user);
+        return this.http
+        .post('http://localhost:3000/user/signin', data, this.headers())
+        .map((response: Response) => {
+            let res = response.json();
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('userId', res.userId);
+           return res;
+        })
+        .catch((error: Response)=> Observable.throw(error.json()));
+    }
+
+    logout() {
+        localStorage.clear();
+    }
+
+    isLoggedIn() {
+        return !!localStorage.getItem('token');
+    }
 }

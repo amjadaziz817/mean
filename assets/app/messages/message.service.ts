@@ -21,14 +21,20 @@ export class MessageService {
             headers: headers
         }
     }
+
+    tokenQueryParam() {
+        return localStorage.getItem('token') ? '?token=' + localStorage.getItem('token') : '';
+
+    }
+
     addMessage(message: Message) {
         let data = JSON.stringify(message);
         return this.http
-        .post('http://localhost:3000/message', data, this.headers())
+        .post('http://localhost:3000/message' + this.tokenQueryParam(), data, this.headers())
         .map((response: Response) => {
             let msg = response.json().obj;
             this.messages.push (new Message(
-                msg.content, "Dummy", msg._id
+                msg.content, msg.user.firstName, msg._id, msg.user._id
             ));
            return response.json()
         })
@@ -38,7 +44,7 @@ export class MessageService {
     updateMessage(message: Message) {
         let data = JSON.stringify(message);
         return this.http
-        .put('http://localhost:3000/message/'+message.messageId, data, this.headers())
+        .put('http://localhost:3000/message/'+message.messageId + this.tokenQueryParam(), data, this.headers())
         .map((response: Response) => response.json())
         .catch((error: Response)=> Observable.throw(error.json()));
     }
@@ -50,8 +56,7 @@ export class MessageService {
             let transformedMessages: Message[] = [];
             let messages = response.json().list;
             for(let message of messages) {
-                message.userName = 'Dummy';
-                transformedMessages.push(new Message(message.content, message.userName, message._id));
+                transformedMessages.push(new Message(message.content, message.user.firstName, message._id, message.user._id));
             }
             this.messages = transformedMessages;
             return transformedMessages;
@@ -68,12 +73,16 @@ export class MessageService {
         let data = JSON.stringify(message);
         this.messages.splice(this.messages.indexOf(message), 1);        
         return this.http
-        .delete('http://localhost:3000/message/' + message.messageId, this.headers())
+        .delete('http://localhost:3000/message/' + message.messageId + this.tokenQueryParam(), this.headers())
         .map((response: Response) => {
             // remove from local collection ...
             return response.json();
         })
         .catch((error: Response)=> Observable.throw(error.json()));
+    }
+
+    messageBelongToUser(userId: string) {
+        return localStorage.getItem('userId') == userId;
     }
 
 }
