@@ -37,13 +37,13 @@ router.post('/signin', function (req, res, next) {
         if(!user) {
             return res.status(500).json({
                 title: 'Invalid credentials!',
-                message: 'You have entered invalid email or password'
+                err: {message: 'You have entered invalid email or password'}
             });
         }
         if(!bcrypt.compareSync(req.body.password, user.password)) {
             return res.status(500).json({
                 title: 'Invalid credentials!',
-                message: 'You have entered invalid email or password'
+                err: {message: 'You have entered invalid email or password'}
             });
         }
         var token = jwt.sign({user: user}, 'secret', {expiresIn: 1800});

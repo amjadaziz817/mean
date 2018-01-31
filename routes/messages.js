@@ -90,12 +90,14 @@ router.put('/:messageId', function(req, res, next) {
         }
         if(!message) {
             return res.status(404).json({
-                title: 'Message not found!'
+                title: 'Message not found!',
+                err: {message: 'No Message found with this id '}
             });
         }
         if(decoded.user._id != message.user) {
             return res.status(401).json({
-                title: 'User does not match!'
+                title: 'Unauthorized!',
+                err: {message: 'User does not match!'}
             });
         }
         message.content = req.body.content;
@@ -127,12 +129,14 @@ router.delete('/:messageId', function(req, res, next) {
         }
         if(!message) {
             return res.status(404).json({
-                title: 'Message not found!'
+                title: 'Message not found!',
+                err: {message: 'No Message found with this id '}
             });
         }
         if(decoded.user._id != message.user) {
             return res.status(401).json({
-                title: 'User does not match!'
+                title: 'Unauthorized!',
+                err: {message: 'User does not match!'}
             });
         }
         message.remove(function(err, result) {
