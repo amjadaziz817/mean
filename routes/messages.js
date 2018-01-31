@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
             console.log('In Error!');
             return res.status(500).json({
                 title: 'Server side error!',
-                err: err
+                error: err
             });
         }
         res.status(200).json({
@@ -29,7 +29,7 @@ router.use('/', function(req, res, next) {
         if(err) {
             return res.status(401).json({
                 title: 'Not Authorized!',
-                err: err
+                error: err
             });
         }
         next();
@@ -46,7 +46,7 @@ router.post('/', function(req, res, next) {
         if(err) {
             return res.status(401).json({
                 title: 'Not Authorized!',
-                err: err
+                error: err
             });
         }
         var message = new Message({
@@ -58,7 +58,7 @@ router.post('/', function(req, res, next) {
             if(err) {
                 return res.status(500).json({
                     title: 'Server side error!',
-                    err: err
+                    error: err
                 });
             }
             user.messages.push(result._id);
@@ -85,19 +85,19 @@ router.put('/:messageId', function(req, res, next) {
         if(err) {
             return res.status(500).json({
                 title: 'Server side error!',
-                err: err
+                error: err
             });
         }
         if(!message) {
             return res.status(404).json({
                 title: 'Message not found!',
-                err: {message: 'No Message found with this id '}
+                error: {message: 'No Message found with this id '}
             });
         }
         if(decoded.user._id != message.user) {
             return res.status(401).json({
                 title: 'Unauthorized!',
-                err: {message: 'User does not match!'}
+                error: {message: 'User does not match!'}
             });
         }
         message.content = req.body.content;
@@ -105,7 +105,7 @@ router.put('/:messageId', function(req, res, next) {
             if(err) {
                 return res.status(500).json({
                     title: 'Server side error!',
-                    err: err
+                    error: err
                 });
             }
 
@@ -124,26 +124,26 @@ router.delete('/:messageId', function(req, res, next) {
         if(err) {
             return res.status(500).json({
                 title: 'Server side error!',
-                err: err
+                error: err
             });
         }
         if(!message) {
             return res.status(404).json({
                 title: 'Message not found!',
-                err: {message: 'No Message found with this id '}
+                error: {message: 'No Message found with this id '}
             });
         }
         if(decoded.user._id != message.user) {
             return res.status(401).json({
                 title: 'Unauthorized!',
-                err: {message: 'User does not match!'}
+                error: {message: 'User does not match!'}
             });
         }
         message.remove(function(err, result) {
             if(err) {
                 return res.status(500).json({
                     title: 'Server side error!',
-                    err: err
+                    error: err
                 });
             }
 

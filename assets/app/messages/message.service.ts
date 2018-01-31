@@ -3,13 +3,14 @@ import {Http, Headers, Response} from '@angular/http';
 import 'rxjs/Rx';
 import {Observable} from 'rxjs';
 import { Message } from "./message.model";
+import { ErrorService } from "../errors/error.service";
 
 @Injectable()
 export class MessageService {
 
     messageIsEdited: EventEmitter<Message> = new EventEmitter();
     
-    constructor(private http: Http) {
+    constructor(private http: Http, private errorService: ErrorService) {
 
     }
     
@@ -38,7 +39,10 @@ export class MessageService {
             ));
            return response.json()
         })
-        .catch((error: Response)=> Observable.throw(error.json()));
+        .catch((error: Response)=> {
+            this.errorService.onErrorOccured(error.json());
+            return Observable.throw(error.json());
+        });
     }
 
     updateMessage(message: Message) {
@@ -46,7 +50,10 @@ export class MessageService {
         return this.http
         .put('http://localhost:3000/message/'+message.messageId + this.tokenQueryParam(), data, this.headers())
         .map((response: Response) => response.json())
-        .catch((error: Response)=> Observable.throw(error.json()));
+        .catch((error: Response)=> {
+            this.errorService.onErrorOccured(error.json());
+            return Observable.throw(error.json());
+        });
     }
 
     getMessages() {
@@ -61,7 +68,10 @@ export class MessageService {
             this.messages = transformedMessages;
             return transformedMessages;
         })
-        .catch((error: Response) => Observable.throw(error.json()));
+        .catch((error: Response)=> {
+            this.errorService.onErrorOccured(error.json());
+            return Observable.throw(error.json());
+        });
     }
 
     editMessage(message: Message) {
@@ -78,7 +88,10 @@ export class MessageService {
             // remove from local collection ...
             return response.json();
         })
-        .catch((error: Response)=> Observable.throw(error.json()));
+        .catch((error: Response)=> {
+            this.errorService.onErrorOccured(error.json());
+            return Observable.throw(error.json());
+        });
     }
 
     messageBelongToUser(userId: string) {

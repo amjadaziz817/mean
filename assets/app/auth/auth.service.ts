@@ -3,10 +3,11 @@ import {Http, Headers, Response} from '@angular/http';
 import 'rxjs/Rx';
 import {Observable} from 'rxjs';
 import { User } from "./user.model";
+import { ErrorService } from "../errors/error.service";
 
 @Injectable()
 export class AuthService {
-    constructor(private http: Http) {
+    constructor(private http: Http, private errorService: ErrorService) {
 
     }
     
@@ -24,7 +25,10 @@ export class AuthService {
         .map((response: Response) => {
            return response.json()
         })
-        .catch((error: Response)=> Observable.throw(error.json()));
+        .catch((error: Response)=> {
+            this.errorService.onErrorOccured(error.json());
+            return Observable.throw(error.json());
+        });
     }
 
     signIn(user: User) {
@@ -38,7 +42,10 @@ export class AuthService {
             localStorage.setItem('userId', res.userId);
            return res;
         })
-        .catch((error: Response)=> Observable.throw(error.json()));
+        .catch((error: Response)=> {
+            this.errorService.onErrorOccured(error.json());
+            return Observable.throw(error.json());
+        });
     }
 
     logout() {

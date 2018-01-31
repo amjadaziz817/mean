@@ -30,9 +30,6 @@ export class SigninComponent implements OnInit{
             response => {
                 console.log('User logged In Successfully!')
                 this.router.navigateByUrl('/');
-            },
-            error => {
-                console.error('Logging in failed '+ JSON.stringify(error));
             }
         );
     }

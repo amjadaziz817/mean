@@ -30,9 +30,6 @@ export class SignupComponent implements OnInit {
             data => {
                 console.log('User Created Successfully');
                 this.router.navigateByUrl('/');
-            },
-            error => {
-                console.error('User creation failed!' + error.title);
             }
         );
     }
